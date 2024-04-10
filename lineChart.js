@@ -30,7 +30,7 @@ const svg = d3.select("#chart-container")
 
         data.forEach(d => {
         d.year = parseYear(d.year);
-        d.cardiovascular_diseases = total;
+        d.cardiovascular_diseases = diseaseByYear;
         });
 
 x.domain(d3.extent(diseaseByYear, d => d[0]));
@@ -40,13 +40,33 @@ svg.append("g")
 .attr("transform", `translate(0,${height})`)
 .style("font-size", "14px")
 .call(d3.axisBottom(x)
-        .tickValues(x.ticks(d3.timeYear))
-        .tickFormat(d3.timeFormat("%Y")));
-
-
+        .tickValues(x.ticks(d3.timeYear.every(4)))
+        .tickFormat(d3.timeFormat("%Y")))
+.call(g => g.select(".domain")) 
+        .selectAll(".tick line") 
+        .style("stroke-opacity", 0)
+      svg.selectAll(".tick text")
+        .attr("fill", "#777");
+//y
 svg.append("g")
-    .call(d3.axisLeft(y));
-    
+    .style("font-size", "14px")
+    .call(d3.axisLeft(y)
+        .ticks((d3.max(data, d => d.cardiovascular_diseases) - 65000) / 5000)
+        .tickFormat(d => {
+      return `${(d / 1000).toFixed(0)}k`;
+  })
+  .tickSize(0)
+  .tickPadding(10))
+  .call(g => g.select(".domain")) 
+  .selectAll(".tick text")
+  .style("fill", "#777") 
+  .style("visibility", (d, i, nodes) => {
+    if (i === 0) {
+      return "hidden"; 
+    } else {
+      return "visible"; 
+    }
+  });
 
 var lineFunc = d3.line()
       .x(d => x(d[0]))

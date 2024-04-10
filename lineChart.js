@@ -19,16 +19,22 @@ const svg = d3.select("#chart-container")
     d3.csv("updated_dataset_with_gdp_per_capita.csv").then(function (data) {
         const parseYear = d3.timeParse("%Y");
         const total = d3.sum(data, d => d.cardiovascular_diseases);
-        let diseaseByYear = d3.rollup(data, v => d3.sum(v, d => d.cardiovascular_diseases), d => d.year)
+        //calculates sum by year and disease
+        let diseaseByYear = Array.from(d3.rollup(data, v => d3.sum(v, d => d.cardiovascular_diseases), d => d.year))
+
+        //sorts by year in ascending order
+        diseaseByYear.sort((a, b) => a[0] - b[0]);
+        diseaseByYear = diseaseByYear.slice(1)
 
         console.log(diseaseByYear)
+
         data.forEach(d => {
         d.year = parseYear(d.year);
         d.cardiovascular_diseases = total;
         });
 
-x.domain(d3.extent(data, d => d.year));
-y.domain(d3.extent(data, d => d.cardiovascular_diseases));
+x.domain(d3.extent(diseaseByYear, d => d[0]));
+y.domain(d3.extent(diseaseByYear, d => d[1]));
 
 svg.append("g")
 .attr("transform", `translate(0,${height})`)
@@ -42,15 +48,15 @@ svg.append("g")
     .call(d3.axisLeft(y));
     
 
-const line = d3.line()
-      .x(d => x(d.year))
-      .y(d => y(d.cardiovascular_diseases));
+var lineFunc = d3.line()
+      .x(d => x(d[0]))
+      .y(d => y(d[1]));
 
 svg.append("path")
-      .datum(data)
-      .attr("fill", "none")
+      .datum(diseaseByYear)
+      .attr('fill','none')
       .attr("stroke", "steelblue")
       .attr("stroke-width", 1)
-      .attr("d", line);
+      .attr("d", lineFunc(diseaseByYear));
       
     })

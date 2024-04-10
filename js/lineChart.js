@@ -11,12 +11,12 @@ const y = d3.scaleTime()
 const svg = d3.select("#chart-container")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", width + margin.top + margin.bottom)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", `translate(${margin.left}), ${margin.right}`);
 
 
-    d3.csv("updated_dataset_with_gdp_per_capita.csv").then(function (data) {
+    d3.csv("data/updated_dataset_with_gdp_per_capita.csv").then(function (data) {
         const parseYear = d3.timeParse("%Y");
         const total = d3.sum(data, d => d.cardiovascular_diseases);
         //calculates sum by year and disease

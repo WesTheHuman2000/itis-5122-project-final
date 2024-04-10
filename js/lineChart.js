@@ -20,8 +20,8 @@ const svg = d3.select("#chart-container")
         data = _data
         // Parse the date and convert the population to a number
         data.forEach(d => {
-          d.year = parseDate(d.year);
-          d.population = +d.population;
+          d.year += d['year'];
+          d.population += d['population'];
         });
     });
 

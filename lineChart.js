@@ -19,6 +19,7 @@ const svg = d3.select("#chart-container")
     d3.csv("updated_dataset_with_gdp_per_capita.csv").then(function (data) {
         const parseYear = d3.timeParse("%Y");
         const total = d3.sum(data, d => d.cardiovascular_diseases);
+        let diseaseByYear = d3.rollup(data, v => d3.sum(v, d => d.cardiovascular_diseases), d => d.year)
         
         data.forEach(d => {
         d.year = parseYear(d.year);
@@ -26,15 +27,19 @@ const svg = d3.select("#chart-container")
         });
 
 x.domain(d3.extent(data, d => d.year));
-y.domain(d3.extent(data, d => d.cardiovascular));
+y.domain(d3.extent(data, d => d.cardiovascular_diseases));
 
 svg.append("g")
 .attr("transform", `translate(0,${height})`)
 .style("font-size", "14px")
 .call(d3.axisBottom(x)
-        .tickValues(x.ticks(d3.timeYear))
-        .tickFormat(d3.timeFormat("%Y")));
-
+        .tickValues(x.ticks(d3.timeYear.every(4)))
+        .tickFormat(d3.timeFormat("%Y")))
+.call(g => g.select(".domain")) 
+        .selectAll(".tick line") 
+        .style("stroke-opacity", 0)
+      svg.selectAll(".tick text")
+        .attr("fill", "#777");
 
 svg.append("g")
     .call(d3.axisLeft(y));
@@ -42,7 +47,7 @@ svg.append("g")
 
 const line = d3.line()
       .x(d => x(d.year))
-      .y(d => y(d.cardiovascular));
+      .y(d => y(d.cardiovascular_diseases));
 
 svg.append("path")
       .datum(data)

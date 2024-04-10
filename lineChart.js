@@ -21,6 +21,9 @@ const svg = d3.select("#chart-container")
         const total = d3.sum(data, d => d.cardiovascular_diseases);
         let diseaseByYear = d3.rollup(data, v => d3.sum(v, d => d.cardiovascular_diseases), d => d.year)
         
+
+
+        console.log(diseaseByYear)
         data.forEach(d => {
         d.year = parseYear(d.year);
         d.cardiovascular_diseases = total;

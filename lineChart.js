@@ -16,38 +16,39 @@ const svg = d3.select("#chart-container")
     .attr("transform", `translate(${margin.left}), ${margin.right}`);
 
 
-    d3.csv("updated_dataset_with_gdp_per_capita.csv").then(_data => {
-        data = _data
-        // Parse the date and convert the population to a number
+    d3.csv("updated_dataset_with_gdp_per_capita.csv").then(function (data) {
+        const parseYear = d3.timeParse("%Y");
+        const total = d3.sum(data, d => d.cardiovascular_diseases);
+        
         data.forEach(d => {
-          d.year = parseDate(d.year);
-          d.population = +d.population;
+        d.year = parseYear(d.year);
+        d.cardiovascular_diseases = total;
         });
-    });
 
-x.domain(d3.extent(dataset, d => d.date));
-y.domain([0, d3.max(dataset, d => d.value)]);
-
-svg.append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x)
-    .ticks(d3.timeMonth.every(1)) 
-    .tickFormat(d3.timeFormat("%b %Y"))); 
+x.domain(d3.extent(data, d => d.year));
+y.domain(d3.extent(data, d => d.cardiovascular));
 
 svg.append("g")
-    .call(d3.axisLeft(y))
+.attr("transform", `translate(0,${height})`)
+.style("font-size", "14px")
+.call(d3.axisBottom(x)
+        .tickValues(x.ticks(d3.timeYear))
+        .tickFormat(d3.timeFormat("%Y")));
 
+
+svg.append("g")
+    .call(d3.axisLeft(y));
+    
 
 const line = d3.line()
-      .x(d => x(d.date))
-      .y(d => y(d.value));
+      .x(d => x(d.year))
+      .y(d => y(d.cardiovascular));
 
 svg.append("path")
-      .datum(dataset)
+      .datum(data)
       .attr("fill", "none")
       .attr("stroke", "steelblue")
       .attr("stroke-width", 1)
       .attr("d", line);
-
-
-
+      
+    })

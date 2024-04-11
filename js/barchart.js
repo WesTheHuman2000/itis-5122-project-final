@@ -5,6 +5,7 @@ class BarChart {
      * @param {Array}
      * @param {d3.Scale}
      * @param {d3.Dispatcher}
+     * @param {d3.Scale} _colorScale 
     */
     constructor(_config, _data, _colorScale, _dispatcher) {
         this.config = {
@@ -78,23 +79,23 @@ class BarChart {
     updateVis() {
         let vis = this;
   
-          //calculates the average count for each disease
-          const diseaseCount = d3.rollup(vis.data, v => d3.mean(v, d => d.count), d => d.disease);
+        //calculates the average count for each disease
+        const diseaseCount = d3.rollup(vis.data, v => d3.mean(v, d => d.count), d => d.disease);
 
-          vis.aggregatedData = Array.from(diseaseCount, ([key, count]) => ({ key, count }));
+        vis.aggregatedData = Array.from(diseaseCount, ([key, count]) => ({ key, count }));
+        vis.colorValue = d => d.key;
+        //sets the x value for each bar to the disease name
+        vis.xValue = d => d.key;
 
-          //sets the x value for each bar to the disease name
-          vis.xValue = d => d.key;
-
-          //sets the y value for each bar to the average count
-          vis.yValue = d => d.count;
-        
-      
-          //sets domain for both axis
-          vis.xScale.domain(vis.aggregatedData.map(vis.xValue));
-          vis.yScale.domain([0, d3.max(vis.aggregatedData, vis.yValue)]);
-      
-          vis.renderVis();
+        //sets the y value for each bar to the average count
+        vis.yValue = d => d.count;
+    
+    
+        //sets domain for both axis
+        vis.xScale.domain(vis.aggregatedData.map(vis.xValue));
+        vis.yScale.domain([0, d3.max(vis.aggregatedData, vis.yValue)]);
+    
+        vis.renderVis();
     }
     
     /**
@@ -112,7 +113,7 @@ class BarChart {
             .attr('y', d => vis.yScale(vis.yValue(d)))
             .attr('width', vis.xScale.bandwidth())
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
-
+            .attr('fill', d => vis.colorScale(d.key))
 
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);

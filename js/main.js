@@ -48,8 +48,9 @@ d3.csv('data/Global Deaths Dieases dataset_v2.csv').then(_data => {
           count: +d['diabetes_mellitus']
         }))
       );
-
-    barchart = new BarChart({parentElement: '#barchart'}, data);
+    const scale_color = d3.scaleOrdinal(d3.schemeSet1)
+    .domain(data.map(d=>d.year));
+    barchart = new BarChart({parentElement: '#barchart'}, data,scale_color);
     barchart.updateVis();
 
 }).catch(error => console.error(error));

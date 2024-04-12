@@ -17,66 +17,76 @@ const svg = d3.select("#chart-container")
 
 
     d3.csv("data/updated_dataset_with_gdp_per_capita.csv").then(function (data) {
+      console.log("Data from CSV:", data.slice(0, 5));
         const parseYear = d3.timeParse("%Y");
-        const total = d3.sum(data, d => d.cardiovascular_diseases);
-        //calculates sum by year and disease
-        let diseaseByYear = Array.from(d3.rollup(data, v => d3.sum(v, d => d.cardiovascular_diseases), d => d.year))
+        const diseases = ['cardiovascular_diseases',
+        'alzheimer\'s_diesease', 
+        'parkinson\'s_disease',
+        'malaria',
+        'hiv/aids',
+        'tuberculosis',
+        'diabetes_mellitus'
+      ];
 
-        //sorts by year in ascending order
-        diseaseByYear.sort((a, b) => a[0] - b[0]);
-        diseaseByYear = diseaseByYear.slice(1)
+        
+        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-        console.log(diseaseByYear)
-
-        data.forEach(d => {
-        d.year = parseYear(d.year);
-        d.cardiovascular_diseases = diseaseByYear;
+        const diseaseTotals = diseases.map(disease => {
+          const totalDeaths = data.reduce((sum, row) => sum + parseInt(row[disease] || 0), 0);
+          return { disease, totalDeaths };
         });
+        x.domain(d3.extent(data, d => parseYear(d.year)));
+        y.domain([
+          0,
+          d3.max(data, (d) => d3.max(diseases, (disease) => d[disease])),
+      ]);
 
-x.domain(d3.extent(diseaseByYear, d => d[0]));
-y.domain(d3.extent(diseaseByYear, d => d[1]));
-
-svg.append("g")
-.attr("transform", `translate(0,${height})`)
-.style("font-size", "14px")
-.call(d3.axisBottom(x)
-        .tickValues(x.ticks(d3.timeYear.every(4)))
-        .tickFormat(d3.timeFormat("%Y")))
-.call(g => g.select(".domain")) 
-        .selectAll(".tick line") 
-        .style("stroke-opacity", 0)
-      svg.selectAll(".tick text")
-        .attr("fill", "#777");
-//y
-svg.append("g")
-    .style("font-size", "14px")
-    .call(d3.axisLeft(y)
-        .ticks((d3.max(data, d => d.cardiovascular_diseases) - 65000) / 5000)
-        .tickFormat(d => {
-      return `${(d / 1000).toFixed(0)}k`;
-  })
-  .tickSize(0)
-  .tickPadding(10))
-  .call(g => g.select(".domain")) 
-  .selectAll(".tick text")
-  .style("fill", "#777") 
-  .style("visibility", (d, i, nodes) => {
-    if (i === 0) {
-      return "hidden"; 
-    } else {
-      return "visible"; 
-    }
-  });
-
-var lineFunc = d3.line()
-      .x(d => x(d[0]))
-      .y(d => y(d[1]));
-
-svg.append("path")
-      .datum(diseaseByYear)
-      .attr('fill','none')
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1)
-      .attr("d", lineFunc(diseaseByYear));
-      
+        svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .style("font-size", "14px")
+        .call(d3.axisBottom(x)
+                .tickValues(x.ticks(d3.timeYear.every(4)))
+                .tickFormat(d3.timeFormat("%Y")))
+        .call(g => g.select(".domain")) 
+                .selectAll(".tick line") 
+                .style("stroke-opacity", 0)
+              svg.selectAll(".tick text")
+                .attr("fill", "#777");
+        
+        svg.append("g")
+        .style("font-size", "14px")
+        .call(d3.axisLeft(y)
+            .ticks(10)
+            .tickFormat(d => `${(d / 1000).toFixed(0)}k`)
+            .tickSize(0)
+            .tickPadding(10))
+        .call(g => g.select(".domain").remove())
+        .selectAll(".tick text")
+        .attr("fill", "#777")
+        .style("visibility", (d, i) => (i === 0 ? "hidden" : "visible"));
+                //y
+        diseases.forEach((disease, index) => {
+          let lineFunc = d3.line()
+              .x(d => x(d.year))
+              .y(d => y(d[disease]));
+  
+          svg.append("path")
+              .datum(data)
+              .attr('fill', 'none')
+              .attr("stroke", colorScale(index))
+              .attr("stroke-width", 1)
+              .attr("d", lineFunc);
+      });
+          
     })
+        
+
+       
+
+        
+
+
+
+
+
+

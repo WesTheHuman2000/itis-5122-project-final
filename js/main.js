@@ -1,6 +1,6 @@
 let data;
 let barchart;
-
+let linechart
 
 // load data from CSV file asynchronously and render charts
 d3.csv('data/Global Deaths Dieases dataset_v2.csv').then(_data => {
@@ -12,44 +12,23 @@ d3.csv('data/Global Deaths Dieases dataset_v2.csv').then(_data => {
     * year: 2007
     */
 
-    data = data.map(d => ({
-        year: +d['year'],
-        disease: 'Alzheimers',
-        count: +d['alzheimer\'s_diesease']
-      })).concat(
-        data.map(d => ({
-          year: +d['year'],
-          disease: 'Parkinsons',
-          count: +d['parkinson\'s_disease']
-        })),
-        data.map(d => ({
-          year: +d['year'],
-          disease: 'Malaria',
-          count: +d['malaria']
-        })),
-        data.map(d => ({
-          year: +d['year'],
-          disease: 'Cardiovascular Disease',
-          count: +d['cardiovascular_diseases']
-        })),
-        data.map(d => ({
-          year: +d['year'],
-          disease: 'HIV/AIDS',
-          count: +d['hiv/aids']
-        })),
-        data.map(d => ({
-          year: +d['year'],
-          disease: 'Tuberculosis',
-          count: +d['tuberculosis']
-        })),
-        data.map(d => ({
-          year: +d['year'],
-          disease: 'Diabetes',
-          count: +d['diabetes_mellitus']
-        }))
-      );
+    data = data.flatMap(d => {
+      const year = +d['year'];
+      return [
+          { year: year, disease: 'Alzheimers', count: +d['alzheimer\'s_diesease'] },
+          { year: year, disease: 'Parkinsons', count: +d['parkinson\'s_disease'] },
+          { year: year, disease: 'Malaria', count: +d['malaria'] },
+          { year: year, disease: 'Cardiovascular Disease', count: +d['cardiovascular_diseases'] },
+          { year: year, disease: 'HIV/AIDS', count: +d['hiv/aids'] },
+          { year: year, disease: 'Tuberculosis', count: +d['tuberculosis'] },
+          { year: year, disease: 'Diabetes', count: +d['diabetes_mellitus'] }
+      ];
+  });
+  
     const scale_color = d3.scaleOrdinal(d3.schemeSet1)
     .domain(data.map(d=>d.year));
+    linechart = new lineChart({parentElement: '#lineChart'}, data, scale_color);
+    linechart.updateVis();
     barchart = new BarChart({parentElement: '#barchart'}, data,scale_color);
     barchart.updateVis();
 

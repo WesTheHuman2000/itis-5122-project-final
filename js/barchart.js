@@ -115,10 +115,8 @@ class BarChart {
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
             .attr('fill', d => vis.colorScale(d.key))
             .on('mouseover', (event, d) => { 
-                
-                    console.log(d.key);
+                    
                     tooltip.text(d.key+ ": "+ d.count)
-                
             })
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);

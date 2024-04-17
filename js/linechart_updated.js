@@ -129,7 +129,7 @@ class lineChart {
         vis.yAxisG.call(vis.yAxis);
        
         
-        console.log(vis.aggregatedData);
+        
         vis.renderVis();
     }
     

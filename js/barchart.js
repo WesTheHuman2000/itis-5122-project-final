@@ -103,7 +103,7 @@ class BarChart {
      */
     renderVis() {
         let vis = this;
-
+        const tooltip = d3.select('.div-tooltip').append('p');
         // add bars
         const bars = vis.chart.selectAll('.bar')
             .data(vis.aggregatedData)
@@ -114,7 +114,12 @@ class BarChart {
             .attr('width', vis.xScale.bandwidth())
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
             .attr('fill', d => vis.colorScale(d.key))
-
+            .on('mouseover', (event, d) => { 
+                
+                    console.log(d.key);
+                    tooltip.text(d.key+ ": "+ d.count)
+                
+            })
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);
     }

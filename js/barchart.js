@@ -109,14 +109,22 @@ class BarChart {
             .data(vis.aggregatedData)
             .join('rect')
             .attr('class', 'bar')
+            .attr('id',d=>d.key)
             .attr('x', d => vis.xScale(vis.xValue(d)))
             .attr('y', d => vis.yScale(vis.yValue(d)))
             .attr('width', vis.xScale.bandwidth())
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
             .attr('fill', d => vis.colorScale(d.key))
             .on('mouseover', (event, d) => { 
+                tooltip
+                    .style('display','inline')
+                    .style("background-color", "white")
+                    .style("border", "solid")
+                    .style("border-width", "1px")
+                    .style("border-radius", "5px")
+                    .style("padding", "5px")
+                    .text(d.key+ ": "+ Math.round(d.count))
                     
-                    tooltip.text(d.key+ ": "+ d.count)
             })
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);

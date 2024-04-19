@@ -104,17 +104,43 @@ class BarChart {
     renderVis() {
         let vis = this;
 
-        // add bars
-        const bars = vis.chart.selectAll('.bar')
+        //creates bar chart group
+        const barchartG = vis.chart.append('g').attr('id','barchartG');
+        
+        //adds group for each bar
+        const barGroups = barchartG.selectAll('g')
             .data(vis.aggregatedData)
-            .join('rect')
+            .join('g')
+            .attr('id',d=>d.key)
+            .attr('transform',d=>`translate(${vis.xScale(vis.xValue(d))}, 0)`);
+        
+        //appends p to div tooltip
+        const tooltip = d3.select('.div-tooltip').append('p');
+
+        // adds bars to each bar group
+        barGroups.append('rect')
             .attr('class', 'bar')
-            .attr('x', d => vis.xScale(vis.xValue(d)))
+            .attr('id', d => d.key)
             .attr('y', d => vis.yScale(vis.yValue(d)))
             .attr('width', vis.xScale.bandwidth())
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
             .attr('fill', d => vis.colorScale(d.key))
-
+            .on('mouseover', (e,d)=>{
+                tooltip
+                    .style('display','inline')
+                    .style('position', 'absolute')
+                    .style('left', `${e.pageX + 8}px`)
+                    .style('top', `${e.pageY - 25}px`)
+                    .style("background-color", "white")
+                    .style("border", "solid")
+                    .style("border-width", "1px")
+                    .style("border-radius", "5px")
+                    .style("padding", "5px")
+                    .text(d.key + ": "+ Math.round(d.count))
+            })
+            .on('mouseout', () => tooltip.style('display','none'));
+            
+           
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);
     }

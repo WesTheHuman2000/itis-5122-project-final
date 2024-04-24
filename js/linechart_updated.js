@@ -81,7 +81,7 @@ class lineChart {
             .attr('x', vis.width / 2)
             .attr('y', vis.height + 40)
             .style('text-anchor', 'middle')
-            .text('Time');
+            
     }
 
     /**

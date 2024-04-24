@@ -15,13 +15,13 @@ d3.csv('data/Global Deaths Dieases dataset_v2.csv').then(_data => {
     data = data.flatMap(d => {
       const year = +d['year'];
       return [
-          { year: year, disease: 'Alzheimers', count: +d['alzheimer\'s_diesease'] },
-          { year: year, disease: 'Parkinsons', count: +d['parkinson\'s_disease'] },
-          { year: year, disease: 'Malaria', count: +d['malaria'] },
-          { year: year, disease: 'Cardiovascular Disease', count: +d['cardiovascular_diseases'] },
-          { year: year, disease: 'HIV/AIDS', count: +d['hiv/aids'] },
-          { year: year, disease: 'Tuberculosis', count: +d['tuberculosis'] },
-          { year: year, disease: 'Diabetes', count: +d['diabetes_mellitus'] }
+        { year: year, disease: 'Cardiovascular Disease', count: +d['cardiovascular_diseases'] },
+        { year: year, disease: 'Tuberculosis', count: +d['tuberculosis'] },
+        { year: year, disease: 'HIV/AIDS', count: +d['hiv/aids'] },
+        { year: year, disease: 'Alzheimers', count: +d['alzheimer\'s_diesease'] },
+        { year: year, disease: 'Diabetes', count: +d['diabetes_mellitus'] },
+        { year: year, disease: 'Malaria', count: +d['malaria'] },
+        { year: year, disease: 'Parkinsons', count: +d['parkinson\'s_disease'] }
       ];
   });
   

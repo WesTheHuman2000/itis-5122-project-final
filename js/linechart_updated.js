@@ -1,3 +1,4 @@
+
 class lineChart {
     /** 
      * class constructor with basic chart configuration
@@ -27,7 +28,7 @@ class lineChart {
     */
     initVis() {
         let vis = this;
-
+        
         // calculate inner chart size; margin specifies the space around the actual chart
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
@@ -88,23 +89,27 @@ class lineChart {
     */
     updateVis() {
         let vis = this;
+        let starting_date = new Date(2000,1,1)
+        let end_date = new Date(2020,1,1)
+        let loop_year;
         // set the filter for years 2000 - 2020
+        
         const filteredData = vis.data.filter(d => d.year >= 2000 && d.year <= 2020);
-
+        
         // group the data by year
         const yearData = d3.group(filteredData, d => d.year);
-  
+        console.log(yearData)
         //calculates the average count for each disease
         
 
         const aggregatedData = Array.from(yearData, ([year, data]) => {
             // Calculate average count for each disease for the current year
             const diseaseCount = d3.rollup(data, v => d3.mean(v, d => d.count), d => d.disease);
-    
+            loop_year = new Date(year, 1,1)
             // Convert rollup result to an array of objects with disease, year, and count
             return Array.from(diseaseCount, ([disease, count]) => ({
                 disease: disease,
-                year: year,
+                year: loop_year,
                 count: count
             }));
         });
@@ -120,7 +125,7 @@ class lineChart {
     
     
         //sets domain for both axis
-        vis.xScale.domain([2000, 2020]);
+        vis.xScale.domain([starting_date, end_date]);
         vis.yScale.domain([0, d3.max(vis.aggregatedData, vis.yValue)]);
 
         

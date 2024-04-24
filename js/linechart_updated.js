@@ -11,9 +11,9 @@ class lineChart {
     constructor(_config, _data, _colorScale, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 960,
-            containerHeight: _config.containerHeight || 600,
-            margin: _config.margin || {top: 25, right: 20, bottom: 20, left: 50},
+            containerWidth: _config.containerWidth || 800,
+            containerHeight: _config.containerHeight || 330,
+            margin: _config.margin || {top: 25, right: 20, bottom: 20, left: 80},
         };
         this.data = _data;
         this.colorScale = _colorScale;
@@ -74,7 +74,7 @@ class lineChart {
             .attr('y', 10)
             .attr('transform', 'rotate(-90)')
             .style('text-anchor', 'middle')
-            .text('Diseases');
+            .text('Disease Count');
 
         vis.svg.append('text')
             .attr('class', 'axis-title')

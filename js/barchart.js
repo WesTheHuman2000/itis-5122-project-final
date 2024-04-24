@@ -10,9 +10,9 @@ class BarChart {
     constructor(_config, _data, _colorScale, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 960,
-            containerHeight: _config.containerHeight || 600,
-            margin: _config.margin || {top: 25, right: 20, bottom: 20, left: 50},
+            containerWidth: _config.containerWidth || 800,
+            containerHeight: _config.containerHeight || 320,
+            margin: _config.margin || {top: 25, right: 20, bottom: 20, left: 80},
         };
         this.data = _data;
         this.colorScale = _colorScale;
@@ -59,7 +59,7 @@ class BarChart {
 
         vis.xAxisG = vis.chart.append('g')
             .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0,${vis.height})`);
+            .attr('transform', `translate(0,${vis.height})`)
 
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
@@ -67,10 +67,12 @@ class BarChart {
         // add axis title for Y
         vis.svg.append('text')
             .attr('class', 'axis-title')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('dy', '0.71em')
-            .text('Diseases');
+            .attr('x', -vis.height / 2)
+            .attr('y', 10)
+            .attr('transform', 'rotate(-90)')
+            .style('text-anchor', 'middle')
+            .text('Average Yearly Count');
+
     }
 
     /**

@@ -24,12 +24,12 @@ d3.csv('data/Global Deaths Dieases dataset_v2.csv').then(_data => {
         { year: year, disease: 'Parkinsons', count: +d['parkinson\'s_disease'] }
       ];
   });
-  
+    dispatcher = d3.dispatch("diseaseClick");
     const scale_color = d3.scaleOrdinal(d3.schemeSet1)
     .domain(data.map(d=>d.year));
-    linechart = new lineChart({parentElement: '#lineChart'}, data, scale_color);
+    linechart = new lineChart({parentElement: '#lineChart'}, data, scale_color, dispatcher);
     linechart.updateVis();
-    barchart = new BarChart({parentElement: '#barchart'}, data,scale_color);
+    barchart = new BarChart({parentElement: '#barchart'}, data,scale_color, dispatcher);
     barchart.updateVis();
 
 }).catch(error => console.error(error));

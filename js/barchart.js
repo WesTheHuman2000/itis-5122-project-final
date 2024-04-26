@@ -21,6 +21,10 @@ class BarChart {
         this.initVis();
     }
     
+    handleBarClick(d) {
+        // Dispatch an event with the selected disease
+        this.dispatcher.call("diseaseClick", null, d.key);
+    }
     /**
      * initialize the scales and axes and add svg and g elements
      * and text elements for the visualization
@@ -140,8 +144,8 @@ class BarChart {
                     .style("padding", "5px")
                     .text(d.key + ": "+ Math.round(d.count))
             })
-            .on('mouseout', () => tooltip.style('display','none'));
-            
+            .on('mouseout', () => tooltip.style('display','none'))
+            .on('click', (event, d) => this.handleBarClick(d));
            
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);

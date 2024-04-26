@@ -19,14 +19,14 @@ class lineChart {
         this.colorScale = _colorScale;
         this.dispatcher = _dispatcher 
 
-        if (_dispatcher) {
-            this.dispatcher = _dispatcher;
-            this.dispatcher.on("diseaseClick.line", (selectedDisease) => {
-                console.log("Selected Disease:", selectedDisease);
-                this.chart.selectAll(".line")
-                    .attr("stroke-opacity", d => d[0] === selectedDisease ? 1 : 0.1);
-            });
-        }
+         
+        this.dispatcher = _dispatcher;
+        this.dispatcher.on("diseaseClick", (selectedDisease) => {
+            console.log("Selected Disease:", selectedDisease);
+            this.chart.selectAll(".line")
+                .attr("stroke-opacity", d => d[0] === selectedDisease ? 1 : 0.1);
+        });
+        
     
         this.initVis();
     }

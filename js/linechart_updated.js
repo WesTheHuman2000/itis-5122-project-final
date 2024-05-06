@@ -19,7 +19,7 @@ class lineChart {
         this.colorScale = _colorScale;
         this.dispatcher = _dispatcher 
 
-         
+        // Dispatch an event with the selected disease
         this.dispatcher = _dispatcher;
         this.dispatcher.on("diseaseClick", (selectedDisease) => {
             console.log("Selected Disease:", selectedDisease);
@@ -101,16 +101,15 @@ class lineChart {
         let starting_date = new Date(2000,1,1)
         let end_date = new Date(2020,1,1)
         let loop_year;
+
         // set the filter for years 2000 - 2020
-        
         const filteredData = vis.data.filter(d => d.year >= 2000 && d.year <= 2020);
         
         // group the data by year
         const yearData = d3.group(filteredData, d => d.year);
         console.log(yearData)
-        //calculates the average count for each disease
-        
 
+        //calculates the average count for each disease
         const aggregatedData = Array.from(yearData, ([year, data]) => {
             // Calculate average count for each disease for the current year
             const diseaseCount = d3.rollup(data, v => d3.mean(v, d => d.count), d => d.disease);
@@ -124,9 +123,7 @@ class lineChart {
         });
 
         vis.aggregatedData = aggregatedData.flat();
-
         vis.colorValue = d => d.key;
-        
         vis.xValue = d => d.year;
 
         //sets the y value for each bar to the average count
@@ -137,13 +134,9 @@ class lineChart {
         vis.xScale.domain([starting_date, end_date]);
         vis.yScale.domain([0, d3.max(vis.aggregatedData, vis.yValue)]);
 
-        
-
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);
        
-        
-        
         vis.renderVis();
     }
     
@@ -162,21 +155,14 @@ class lineChart {
         const lines = vis.chart.selectAll('.line')
             .data(Array.from(nestedData), d => d[0]);
         
-        // we can use this for when we set up data filtering
+        // To set up data filtering
         lines.exit().remove();
-
-        // lines.enter().append('path')
-        //     .attr('class', 'line')
-        //     .attr('d', line)
-        //     .attr('fill', 'none')
-        //     .attr('stroke', 'steelblue')
-        //     .attr('stroke-width', 2);
 
 
         lines.enter().append('path')
             .attr('class', 'line')
             .attr('fill', 'none')
-            .attr('stroke', d => vis.colorScale(d[0])) // Assuming colorScale is defined elsewhere
+            .attr('stroke', d => vis.colorScale(d[0]))
             .attr('stroke-width', 2)
             .merge(lines) // Merge enter and update selections
             .attr('d', d => line(d[1])); // Generate line path for each disease

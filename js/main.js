@@ -6,7 +6,8 @@ let linechart
 d3.csv('data/Global Deaths Dieases dataset_v2.csv').then(_data => {
     data = _data;
 
-    /*restructures data i.e. 
+    /*restructures data
+    * i.e. 
     * count: 1402 
     * disease: "alzheimers"
     * year: 2007
@@ -23,10 +24,14 @@ d3.csv('data/Global Deaths Dieases dataset_v2.csv').then(_data => {
         { year: year, disease: 'Malaria', count: +d['malaria'] },
         { year: year, disease: 'Parkinsons', count: +d['parkinson\'s_disease'] }
       ];
-  });
+    });
+
+    //Create dispatcher and set color scale
     dispatcher = d3.dispatch("diseaseClick");
     const scale_color = d3.scaleOrdinal(d3.schemeSet1)
-    .domain(data.map(d=>d.year));
+      .domain(data.map(d=>d.year));
+
+    //Instantiates, renders, and updates charts
     linechart = new lineChart({parentElement: '#lineChart'}, data, scale_color, dispatcher);
     linechart.updateVis();
     barchart = new BarChart({parentElement: '#barchart'}, data,scale_color, dispatcher);

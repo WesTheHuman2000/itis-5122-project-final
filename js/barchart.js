@@ -87,9 +87,9 @@ class BarChart {
   
         //calculates the average count for each disease
         const diseaseCount = d3.rollup(vis.data, v => d3.mean(v, d => d.count), d => d.disease);
-
         vis.aggregatedData = Array.from(diseaseCount, ([key, count]) => ({ key, count }));
         vis.colorValue = d => d.key;
+
         //sets the x value for each bar to the disease name
         vis.xValue = d => d.key;
 
